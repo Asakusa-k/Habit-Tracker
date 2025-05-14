@@ -1,23 +1,25 @@
-import { View, Text, StyleSheet, FlatList, RefreshControl, ActivityIndicator } from 'react-native';
-import { useHabits } from '@/context/HabitsContext';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/store';
+import { completeHabit } from '@/store/habitsSlice';
 import { useTheme } from '@/context/ThemeContext';
 import { HabitCard } from '@/components/HabitCard';
 import { Quote } from '@/components/Quote';
-import { useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import { EmptyState } from '@/components/EmptyState';
 import { format } from 'date-fns';
 
 export default function HomeScreen() {
-  const { habits, completeHabit, isLoading, error } = useHabits();
+  const dispatch = useDispatch<AppDispatch>();
+  const habits = useSelector((state: RootState) => state.habits.habits);
+  const isLoading = useSelector((state: RootState) => state.habits.isLoading);
+  const error = useSelector((state: RootState) => state.habits.error);
   const { colors } = useTheme();
-  
 
-  const handleToggleHabit = async (id: string, completed: boolean) => {
-    await completeHabit(id, completed);
+  const handleToggleHabit = (id: string, completed: boolean) => {
+    dispatch(completeHabit({ id, completed }));
   };
 
-  if (isLoading ) {
+  if (isLoading) {
     return (
       <View style={[styles.container, styles.centerContent, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -54,7 +56,6 @@ export default function HomeScreen() {
         )}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-      
         ListEmptyComponent={
           <EmptyState 
             title="No habits yet" 

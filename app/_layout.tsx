@@ -6,6 +6,8 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { HabitsProvider } from '@/context/HabitsContext';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { SplashScreen } from 'expo-router';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -32,14 +34,16 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <HabitsProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </HabitsProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <HabitsProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="+not-found" options={{ title: 'Oops!' }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </HabitsProvider>
+      </ThemeProvider>
+    </Provider>
   );
 }

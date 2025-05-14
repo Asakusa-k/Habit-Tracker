@@ -16,11 +16,14 @@ import { IconPicker } from '@/components/IconPicker';
 import { ColorPicker } from '@/components/ColorPicker';
 import { router } from 'expo-router';
 import { HabitCategory } from '@/types/habit';
+import { useDispatch } from 'react-redux';
+import { addHabit } from '@/store/habitsSlice';
+import type { AppDispatch } from '@/store'; // <-- Import AppDispatch type
 
 export default function AddHabitScreen() {
+  // const { addHabit, habits } = useHabits();
   const { colors } = useTheme();
-  const { addHabit, habits } = useHabits();
-  
+  const dispatch = useDispatch<AppDispatch>(); // <-- Type the dispatch
   const [name, setName] = useState('');
   const [category, setCategory] = useState<HabitCategory>('mindfulness');
   const [icon, setIcon] = useState('brain-circuit');
@@ -61,14 +64,14 @@ export default function AddHabitScreen() {
 
   const handleSave = () => {
     if (name.trim() === '') return;
-    addHabit({
-      name,
+    dispatch(addHabit({  name,
       category,
       icon,
       color,
       reminderEnabled,
       reminderTime,
-    });
+    }));
+   
     resetStates();
     router.navigate('/home');
   };
